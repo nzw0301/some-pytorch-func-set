@@ -1,5 +1,5 @@
-from src import __version__
 import torch
+from src import __version__
 from src.loss.snn import SNN
 
 num_samples = 4096
