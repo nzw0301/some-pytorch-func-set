@@ -87,9 +87,8 @@ def test_calculate_lr_list_simsiam_large_minibatch() -> None:
 def test_calculate_lr_list_simclr() -> None:
     # case 3: SimCLR/SWaV style: update lr by iteration
     # Ref:
-        # SimCLR: https://arxiv.org/abs/2002.05709
-        # SWaV: https://arxiv.org/abs/2006.09882
-
+    # SimCLR: https://arxiv.org/abs/2002.05709
+    # SWaV: https://arxiv.org/abs/2006.09882
 
     lr = 0.1
     warmup_epochs = 3

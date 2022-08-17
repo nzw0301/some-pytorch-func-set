@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def calculate_scaled_lr(
     base_lr: float, batch_size: int, lr_schedule: str = "linear"
 ) -> float:
