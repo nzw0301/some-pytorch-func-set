@@ -2,7 +2,7 @@ import numpy as np
 
 
 def calculate_scaled_lr(
-    base_lr: float, batch_size: int, lr_schedule: str = "linear"
+    base_lr: float, batch_size: int, lr_scale: str = "linear"
 ) -> float:
     """Mini-batch size dependent initial learning rate proposed by Chen et al.
 
@@ -12,7 +12,7 @@ def calculate_scaled_lr(
     Args:
         base_lr (float): Base learning rate.
         batch_size (int): The number of batches in a mini-batch.
-        lr_schedule (str): Type of lr calculation. Should be either
+        lr_scale (str): Type of lr calculation. Should be either
             "linear" or "square". Defaults to "linear".
 
     Returns:
@@ -24,9 +24,9 @@ def calculate_scaled_lr(
 
     assert base_lr > 0.0
     assert batch_size >= 1
-    assert lr_schedule in {"linear", "square"}
+    assert lr_scale in {"linear", "square"}
 
-    if lr_schedule == "linear":
+    if lr_scale == "linear":
         scaled_lr = base_lr * batch_size / 256.0
     else:
         scaled_lr = base_lr * np.sqrt(batch_size)

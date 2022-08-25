@@ -1,7 +1,7 @@
 import numpy as np
 import torch
-
-from contrib.optim.lr_scheduler import get_linear_warmup_cosine_annealing_lr_scheduler
+from contrib.optim.lr_scheduler import \
+    get_linear_warmup_cosine_annealing_lr_scheduler
 
 
 def extract_lrs(optimizer, lr_scheduler, epochs, num_batch_per_epoch) -> np.ndarray:
