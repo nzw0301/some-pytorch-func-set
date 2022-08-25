@@ -1,5 +1,7 @@
 import numpy as np
+import pytest
 import torch
+
 from contrib.optim.lr_scheduler import \
     get_linear_warmup_cosine_annealing_lr_scheduler
 
@@ -113,3 +115,31 @@ def test_calculate_lr_list_simclr() -> None:
     assert all(np.diff(lrs[:num_warmup_updates]) > 0.0)
     # cosine period: lr monotonically decreases
     assert all(np.diff(lrs[num_warmup_updates:]) < 0.0)
+
+
+@pytest.mark.parametrize("cosine_epochs", [0, -1])
+def test_invalid_cosine_epochs(cosine_epochs: int):
+    optimizer = torch.optim.SGD(lr=0.1, params=list(torch.tensor([0.1])))
+
+    with pytest.raises(ValueError):
+        get_linear_warmup_cosine_annealing_lr_scheduler(
+            optimizer,
+            warmup_epochs=10,
+            cosine_epochs=cosine_epochs,
+            num_batch_per_epoch=1,
+            is_lr_update_per_iteration=True,
+        )
+
+
+@pytest.mark.parametrize("num_batch_per_epoch", [0, -1])
+def test_invalid_cosine_epochs(num_batch_per_epoch: int):
+    optimizer = torch.optim.SGD(lr=0.1, params=list(torch.tensor([0.1])))
+
+    with pytest.raises(ValueError):
+        get_linear_warmup_cosine_annealing_lr_scheduler(
+            optimizer,
+            warmup_epochs=0,
+            cosine_epochs=1,
+            num_batch_per_epoch=num_batch_per_epoch,
+            is_lr_update_per_iteration=True,
+        )

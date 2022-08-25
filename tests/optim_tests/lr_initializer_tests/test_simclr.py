@@ -1,4 +1,5 @@
 import pytest
+
 from contrib.optim.lr_initializer.simclr import calculate_scaled_lr
 
 

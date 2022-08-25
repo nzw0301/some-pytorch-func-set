@@ -1,4 +1,5 @@
 import torch
+
 from contrib.loss import SNN
 
 num_samples = 4096

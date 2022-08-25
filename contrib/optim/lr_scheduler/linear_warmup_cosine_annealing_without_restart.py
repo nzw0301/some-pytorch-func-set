@@ -44,28 +44,31 @@ def get_linear_warmup_cosine_annealing_lr_scheduler(
         Ilya Loshchilov & Frank Hutter, SGDR: Stochastic Gradient Descent with Warm Restarts. In ICLR, 2017.
     """
 
+    if cosine_epochs <= 0:
+        raise ValueError(f"`cosine_epochs` should be positive, not {cosine_epochs}.")
+
     if is_lr_update_per_iteration:
-        assert num_batch_per_epoch > 0
+        if num_batch_per_epoch <= 0:
+            raise ValueError(
+                f"`num_batch_per_epoch` should be positive when `is_lr_update_per_iteration=True`, not {num_batch_per_epoch}."
+            )
         num_lr_updates_per_epoch = num_batch_per_epoch
     else:
         num_lr_updates_per_epoch = 1
 
-    assert cosine_epochs > 0
-
     num_warmup_lr_updates = warmup_epochs * num_lr_updates_per_epoch
     num_cosine_lr_updates = cosine_epochs * num_lr_updates_per_epoch
 
-    def _linear_warmup_cosine_annealing_without_restart(step) -> float:
-        # Linear warmup part.
-        # Since returned value is multipied by base_lr in optimizer,
-        # the maximum should be 1.
+    def _linear_warmup_cosine_annealing_without_restart(step: int) -> float:
         _step = step
         if not is_lr_update_per_iteration:
             _step = step // num_batch_per_epoch
 
-        # print(_step, step, num_cosine_lr_updates, cosine_epochs)
-
+        # Depending on the step, lr calculation uses either linear warmup or cosine annealing without restart.
         if _step < num_warmup_lr_updates:
+            # Linear warmup part.
+            # Since returned value is multipied by base_lr in optimizer,
+            # the maximum should be 1.
             return np.linspace(0, 1.0, num_warmup_lr_updates)[_step]
 
         else:
