@@ -14,6 +14,8 @@ def get_linear_warmup_cosine_annealing_lr_scheduler(
     The calculated value is multiply by base_lr in optimizer by `LambdaLR`.
     Original implementation comes from https://github.com/facebookresearch/swav/blob/master/main_swav.py#L178-L182
 
+    Assume total number of epochs is `warmup_epochs + num_cosine_epoch`.
+
     Args:
         optimizer (torch.optim.Optimizer): Optimizer instance whose initial
             learning rate should be set correctly.
@@ -21,7 +23,8 @@ def get_linear_warmup_cosine_annealing_lr_scheduler(
         num_cosine_epoch (int): The number of epochs of cosine-annealing
             without restart.
         num_batch_per_epoch (int): The number of batches (: updates) per epoch.
-            Usually, this value should be `len(train_dataloader)`.
+            Usually, this value should be `len(train_dataloader)`. When `is_lr_update_per_iteration`
+            is `False`, this value is ignored.
         is_lr_update_per_iteration (bool): If `True`,
             learning rate changes at every iteration.
             Otherwise, learning rate changes at the end of every epoch.
@@ -42,11 +45,12 @@ def get_linear_warmup_cosine_annealing_lr_scheduler(
     """
 
     if is_lr_update_per_iteration:
+        assert num_batch_per_epoch > 0
         num_lr_updates_per_epoch = num_batch_per_epoch
     else:
         num_lr_updates_per_epoch = 1
 
-    assert num_batch_per_epoch > 0
+    assert cosine_epochs > 0
 
     num_warmup_lr_updates = warmup_epochs * num_lr_updates_per_epoch
     num_cosine_lr_updates = cosine_epochs * num_lr_updates_per_epoch
