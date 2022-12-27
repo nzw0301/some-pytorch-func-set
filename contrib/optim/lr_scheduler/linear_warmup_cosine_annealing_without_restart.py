@@ -72,11 +72,10 @@ def get_linear_warmup_cosine_annealing_lr_scheduler(
             return np.linspace(0, 1.0, num_warmup_lr_updates)[_step]
 
         else:
-            # Cosine part.
+            # Cosine decay part.
             # Since returned value is multipied by base_lr in optimizer,
             # we drop init_lr from the calculation.
             t = _step - num_warmup_lr_updates
-            # print(_step, step)
             return 0.5 * (1.0 + np.cos(np.pi * t / num_cosine_lr_updates))
 
     return torch.optim.lr_scheduler.LambdaLR(
