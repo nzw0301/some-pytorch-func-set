@@ -6,7 +6,12 @@ from contrib.optim.lr_scheduler import \
     get_linear_warmup_cosine_annealing_lr_scheduler
 
 
-def extract_lrs(optimizer, lr_scheduler, epochs, num_batch_per_epoch) -> np.ndarray:
+def extract_lrs(
+    optimizer: torch.optim.Optimizer,
+    lr_scheduler: torch.optim.lr_scheduler.LambdaLR,
+    epochs: int,
+    num_batch_per_epoch: int,
+) -> np.ndarray:
     lrs = []
     for _ in range(epochs):
         for _ in range(num_batch_per_epoch):
@@ -132,7 +137,7 @@ def test_invalid_cosine_epochs(cosine_epochs: int):
 
 
 @pytest.mark.parametrize("num_batch_per_epoch", [0, -1])
-def test_invalid_cosine_epochs(num_batch_per_epoch: int):
+def test_invalid_num_batch_per_epoch(num_batch_per_epoch: int):
     optimizer = torch.optim.SGD(lr=0.1, params=list(torch.tensor([0.1])))
 
     with pytest.raises(ValueError):
